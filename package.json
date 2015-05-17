@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/sortelli/jachi-soro",
   "dependencies": {
-    "express": "^4.12.3"
+    "body-parser": "^1.12.4",
+    "express": "^4.12.3",
+    "express-session": "^1.11.2"
   },
   "devDependencies": {
     "coffee-script": "^1.9.2",
