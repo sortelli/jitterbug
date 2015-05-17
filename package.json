@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/sortelli/jachi-soro/issues"
   },
-  "homepage": "https://github.com/sortelli/jachi-soro"
+  "homepage": "https://github.com/sortelli/jachi-soro",
+  "dependencies": {
+    "express": "^4.12.3"
+  }
 }
