@@ -1,0 +1,23 @@
+{
+  "name": "jachi-soro",
+  "version": "0.0.1",
+  "description": "Nodejs version of Machi Koro game",
+  "main": "jachi-soro.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sortelli/jachi-soro"
+  },
+  "keywords": [
+    "Machi",
+    "Koro"
+  ],
+  "author": "Joe Sortelli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sortelli/jachi-soro/issues"
+  },
+  "homepage": "https://github.com/sortelli/jachi-soro"
+}
