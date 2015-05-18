@@ -8,5 +8,13 @@
     <script type="text/javascript" src="libs.min.js"></script>
     <script type="text/javascript" src="jachi-soro-client.js"></script>
   </head>
-  <body ng-controller="jachiSoroMainController"></body>
+  <body ng-controller="JachiSoroMainController">
+    <div ng-if="error">
+      {{ error }}
+    </div>
+
+    <div ng-if="user">
+      {{ user }}
+    </div>
+  </body>
 </html>
