@@ -5,7 +5,7 @@
     "Joe Sortelli <joe@sortelli.com>"
   ],
   "description": "Nodejs version of Machi Koro game",
-  "main": "index.html",
+  "main": "app/public/index.html",
   "keywords": [
     "Machi",
     "Koro"
