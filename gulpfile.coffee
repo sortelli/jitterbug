@@ -3,6 +3,7 @@ coffee    = require 'gulp-coffee'
 concat    = require 'gulp-concat'
 filter    = require 'gulp-filter'
 uglify    = require 'gulp-uglify'
+sass      = require 'gulp-sass'
 main_bf   = require 'main-bower-files'
 nodemon   = require 'gulp-nodemon'
 
@@ -18,6 +19,12 @@ gulp.task 'web-coffee', ->
     .pipe coffee    bare: true
     .pipe concat    'jachi-soro-client.js'
     .pipe gulp.dest public_dir
+
+gulp.task 'web-style', ->
+  gulp.src 'src/client/*.scss'
+    .pipe sass().on 'error', sass.logError
+    .pipe concat    'jachi-soro-client.css'
+    .pipe gulp.dest  public_dir
 
 gulp.task 'server-coffee', ->
   gulp.src 'src/server/*.coffee'
@@ -35,10 +42,10 @@ gulp.task 'libs', ->
 gulp.task 'start', ['default'], ->
   nodemon
     script: app_dir + '/jachi-soro-server.js'
-    ext: 'coffee html'
+    ext: 'coffee scss html'
     tasks: ['default']
     env:
       'NODE_ENV': 'development'
 
 gulp.task 'default', ->
-  gulp.run   'web-resources', 'web-coffee', 'server-coffee'
+  gulp.run   'web-resources', 'web-coffee', 'web-style', 'server-coffee'
