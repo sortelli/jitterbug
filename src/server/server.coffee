@@ -29,7 +29,7 @@ app.use passport.session()
 server = app.listen 3000, ->
   port = server.address().port
 
-  console.log 'Started jachi-koro %s', port
+  console.log 'Started jitterbug %s', port
 
 app.get '/auth/google', passport.authenticate(
   'google-openidconnect', scope: ['profile', 'email']

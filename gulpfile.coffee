@@ -17,19 +17,19 @@ gulp.task 'web-resources', ->
 gulp.task 'web-coffee', ->
   gulp.src 'src/client/*.coffee'
     .pipe coffee    bare: true
-    .pipe concat    'jachi-soro-client.js'
+    .pipe concat    'jitterbug-client.js'
     .pipe gulp.dest public_dir
 
 gulp.task 'web-style', ->
   gulp.src 'src/client/*.scss'
     .pipe sass().on 'error', sass.logError
-    .pipe concat    'jachi-soro-client.css'
+    .pipe concat    'jitterbug-client.css'
     .pipe gulp.dest public_dir + '/css'
 
 gulp.task 'server-coffee', ->
   gulp.src 'src/server/*.coffee'
     .pipe coffee    bare: true
-    .pipe concat    'jachi-soro-server.js'
+    .pipe concat    'jitterbug-server.js'
     .pipe gulp.dest app_dir
 
 gulp.task 'libs', ->
@@ -41,7 +41,7 @@ gulp.task 'libs', ->
 
 gulp.task 'start', ['default'], ->
   nodemon
-    script: app_dir + '/jachi-soro-server.js'
+    script: app_dir + '/jitterbug-server.js'
     ext: 'coffee scss html'
     tasks: ['quick-build']
     env:

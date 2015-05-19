@@ -1,4 +1,4 @@
-jachiSoro = angular.module('jachiSoro', ['ui.router']);
+jitterbug = angular.module('jitterbug', ['ui.router']);
 
 http_get = ($http, $scope, url, success) ->
   $http.get url
@@ -7,7 +7,7 @@ http_get = ($http, $scope, url, success) ->
       $scope.error = data
       console.log data
 
-jachiSoro.config ['$stateProvider', '$urlRouterProvider',
+jitterbug.config ['$stateProvider', '$urlRouterProvider',
   ($stateProvider, $urlRouterProvider) ->
     $urlRouterProvider.otherwise '/game'
 
@@ -21,7 +21,7 @@ jachiSoro.config ['$stateProvider', '$urlRouterProvider',
         controller:  'GameController'
 ]
 
-jachiSoro.controller 'JachiSoroMainController', [
+jitterbug.controller 'JitterbugMainController', [
   '$scope', '$http', ($scope, $http) ->
     $http.get '/api/session/user'
       .success (data) ->
@@ -36,7 +36,7 @@ jachiSoro.controller 'JachiSoroMainController', [
           $scope.login_state = 'error'
 ]
 
-jachiSoro.controller 'GameController', [
+jitterbug.controller 'GameController', [
   '$scope', '$state', ($scope, $state) ->
     $state.go 'login' unless $scope.login_state == 'logged-in'
 ]

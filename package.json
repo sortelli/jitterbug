@@ -1,25 +1,22 @@
 {
-  "name": "jachi-soro",
+  "name": "jitterbug",
   "version": "0.0.1",
-  "description": "Nodejs version of Machi Koro game",
-  "main": "app/jachi-soro-server.js",
+  "description": "Nodejs version of Critters game",
+  "main": "app/jitterbug-server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sortelli/jachi-soro"
+    "url": "https://github.com/sortelli/jitterbug"
   },
-  "keywords": [
-    "Machi",
-    "Koro"
-  ],
+  "keywords": [],
   "author": "Joe Sortelli",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sortelli/jachi-soro/issues"
+    "url": "https://github.com/sortelli/jitterbug/issues"
   },
-  "homepage": "https://github.com/sortelli/jachi-soro",
+  "homepage": "https://github.com/sortelli/jitterbug",
   "dependencies": {
     "body-parser": "^1.12.4",
     "express": "^4.12.3",
