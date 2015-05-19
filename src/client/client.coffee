@@ -1,4 +1,4 @@
-jachiSoro = angular.module('jachiSoro', []);
+jachiSoro = angular.module('jachiSoro', ['ui.router']);
 
 http_get = ($http, $scope, url, success) ->
   $http.get url
@@ -6,6 +6,20 @@ http_get = ($http, $scope, url, success) ->
     .error (data) ->
       $scope.error = data
       console.log data
+
+jachiSoro.config ['$stateProvider', '$urlRouterProvider',
+  ($stateProvider, $urlRouterProvider) ->
+    $urlRouterProvider.otherwise '/game'
+
+    $stateProvider
+      .state 'login',
+        url:         '/login'
+        templateUrl: 'templates/login.html'
+      .state 'game',
+        url:         '/game'
+        templateUrl: 'templates/game.html'
+        controller:  'GameController'
+]
 
 jachiSoro.controller 'JachiSoroMainController', [
   '$scope', '$http', ($scope, $http) ->
@@ -20,4 +34,9 @@ jachiSoro.controller 'JachiSoroMainController', [
         else
           $scope.error       = data
           $scope.login_state = 'error'
+]
+
+jachiSoro.controller 'GameController', [
+  '$scope', '$state', ($scope, $state) ->
+    $state.go 'login' unless $scope.login_state == 'logged-in'
 ]
