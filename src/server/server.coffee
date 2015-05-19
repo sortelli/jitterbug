@@ -50,15 +50,6 @@ app.get '/api/session/user', (req, res) ->
   else
     res.status(400).send 'No active session'
 
-app.post '/api/session/login', (req, res) ->
-  sess = req.session
-
-  if req.body.email
-    sess.user = email: req.body.email
-    res.redirect '/'
-  else
-    res.send 'Missing login data'
-
 app.get '/api/session/logout', (req, res) ->
   req.session.destroy ->
     res.redirect '/'

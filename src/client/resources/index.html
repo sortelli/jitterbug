@@ -20,10 +20,7 @@
         Welcome {{ user }}
       </div>
       <div ng-switch-default>
-        <form action="/api/session/login" method="post">
-          <input type="text" name="email" value="test@sortelli.com" />
-          <input type="submit" />
-        </form>
+        <a href="/auth/google/"><img src="/imgs/google_login.png" /></a>
       </div>
     </div>
   </body>
