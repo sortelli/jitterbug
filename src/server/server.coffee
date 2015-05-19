@@ -2,10 +2,7 @@ express     = require 'express'
 session     = require 'express-session'
 body_parser = require 'body-parser'
 passport    = require 'passport'
-yaml        = require 'js-yaml'
-fs          = require 'fs'
-
-config = yaml.safeLoad fs.readFileSync __dirname + '/../config.yml', 'utf8'
+config      = require(__dirname + '/../config')
 
 passport.serializeUser   (user, done) -> done null, user
 passport.deserializeUser ( obj, done) -> done null, obj
@@ -22,7 +19,7 @@ app.use body_parser.json()
 app.use body_parser.urlencoded extended: true
 
 passport.use new (require('passport-google-openidconnect').Strategy)
-    clientID:    config.google.client_id
+    clientID:     config.google.client_id
     clientSecret: config.google.client_secret
     callbackURL:  "http://127.0.0.1:3000/auth/google/return"
   , (iss, sub, profile, accessToken, refreshToken, done) ->
