@@ -50,6 +50,6 @@ app.get '/api/session/user', (req, res) ->
   else
     res.status(400).send 'No active session'
 
-app.get '/api/session/logout', (req, res) ->
+app.get '/logout', (req, res) ->
   req.session.destroy ->
     res.redirect '/'
