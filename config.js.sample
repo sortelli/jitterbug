@@ -1,8 +1,8 @@
 var config = {
   google: {
-    client_id:       "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    client_secret:   "YYYYYYYYYYYYY",
-    client_callback: "http://127.0.0.1:3000/auth/google/return"
+    client_id:     "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    client_secret: "YYYYYYYYYYYYY",
+    callback_url:  "http://127.0.0.1:3000/auth/google/return"
   }
 }
 

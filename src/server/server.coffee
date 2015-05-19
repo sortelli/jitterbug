@@ -15,7 +15,7 @@ passport.deserializeUser ( obj, done) -> done null, obj
 passport.use new (require('passport-google-openidconnect').Strategy)
     clientID:     config.google.client_id
     clientSecret: config.google.client_secret
-    callbackURL:  "http://127.0.0.1:3000/auth/google/return"
+    callbackURL:  config.google.callback_url
   , (iss, sub, profile, accessToken, refreshToken, done) ->
     done(null, profile)
 
