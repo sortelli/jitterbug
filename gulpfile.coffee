@@ -29,7 +29,6 @@ gulp.task 'web-style', ->
 gulp.task 'server-coffee', ->
   gulp.src 'src/server/*.coffee'
     .pipe coffee    bare: true
-    .pipe concat    'jitterbug-server.js'
     .pipe gulp.dest app_dir
 
 gulp.task 'libs', ->
