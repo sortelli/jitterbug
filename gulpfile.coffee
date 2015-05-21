@@ -10,6 +10,10 @@ nodemon   = require 'gulp-nodemon'
 app_dir    = 'app'
 public_dir = app_dir + '/public'
 
+gulp.task 'web-db', ->
+  gulp.src 'src/client/db/**'
+  .pipe gulp.dest app_dir + '/db'
+
 gulp.task 'web-resources', ->
   gulp.src 'src/client/resources/**'
   .pipe gulp.dest public_dir
@@ -47,7 +51,7 @@ gulp.task 'start', ['default'], ->
       'NODE_ENV': 'development'
 
 gulp.task 'quick-build', ->
-  gulp.run   'web-resources', 'web-coffee', 'web-style', 'server-coffee'
+  gulp.run   'web-resources', 'web-db', 'web-coffee', 'web-style', 'server-coffee'
 
 gulp.task 'full-build', ->
   gulp.run   'libs', 'quick-build'

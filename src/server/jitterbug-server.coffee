@@ -10,6 +10,8 @@ if app.get('env') == 'development'
   morgan = require 'morgan'
   app.use morgan 'dev'
 
+db = require('./db.js')(app.get('env'))
+
 passport.serializeUser   (user, done) -> done null, user
 passport.deserializeUser ( obj, done) -> done null, obj
 passport.use new (require('passport-google-openidconnect').Strategy)
