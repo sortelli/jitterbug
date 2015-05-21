@@ -1,5 +1,5 @@
 express     = require 'express'
-session     = require 'express-session'
+session     = require 'cookie-session'
 body_parser = require 'body-parser'
 passport    = require 'passport'
 config      = require(__dirname + '/../config')
@@ -22,7 +22,7 @@ passport.use new (require('passport-google-openidconnect').Strategy)
     done(null, profile)
 
 app.use express.static __dirname + '/public'
-app.use session secret: 'secret-TODO-change-me'
+app.use session keys: ['secret-TODO-change-me']
 app.use body_parser.json()
 app.use body_parser.urlencoded extended: true
 app.use passport.initialize()
@@ -53,5 +53,5 @@ app.get '/api/session/user', (req, res) ->
     res.status(400).send 'No active session'
 
 app.get '/logout', (req, res) ->
-  req.session.destroy ->
-    res.redirect '/'
+  req.session = null
+  res.redirect '/'
