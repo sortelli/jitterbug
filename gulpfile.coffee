@@ -42,7 +42,7 @@ gulp.task 'libs', ->
     .pipe uglify()
     .pipe gulp.dest public_dir
 
-gulp.task 'start', ['default'], ->
+gulp.task 'start', ['quick-build'], ->
   nodemon
     script: app_dir + '/jitterbug-server.js'
     ext: 'coffee scss html'
