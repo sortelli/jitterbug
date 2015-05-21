@@ -7,6 +7,13 @@ that we had in college.
 
 ### Setup
 
+It is assumed that you already have node and npm installed. If you
+do not already have gulp installed, install it globally with npm:
+
+```bash
+% npm install --global gulp
+```
+
 After the first time you clone, or anytime an npm package is added
 or removed from package.json:
 
