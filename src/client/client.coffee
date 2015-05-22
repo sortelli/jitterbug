@@ -39,4 +39,8 @@ jitterbug.controller 'JitterbugMainController', [
 jitterbug.controller 'GameController', [
   '$scope', '$state', ($scope, $state) ->
     $state.go 'login' unless $scope.login_state == 'logged-in'
+
+    $scope.$on '$viewContentLoaded', ->
+      $('#jitterbug_game').html '<canvas id="jitterbug_game_canvas"/>'
+      jitterbug_game 'jitterbug_game_canvas'
 ]
