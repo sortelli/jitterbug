@@ -18,8 +18,8 @@ next_turn = (bugs, canvas, turns) ->
   next_iteration bugs
   render_game canvas, bugs
 
-  if turns < 10
-    setTimeout((-> next_turn bugs, canvas, turns + 1), 100)
+  if turns < 1000
+    setTimeout((-> next_turn bugs, canvas, turns + 1), 50)
 
 empty_grid = ->
   grid = []
@@ -42,13 +42,14 @@ starting_bugs = ->
       'rgb(0,0,255)'
     ]
 
-  add_bug bugs, 'fly_trap', create_fly_trap
-  add_bug bugs, 'fly_trap', create_fly_trap
-  add_bug bugs, 'fly_trap', create_fly_trap
+  for i in [0..10]
+    add_bug bugs, 'fly_trap', create_fly_trap
 
-  add_bug bugs, 'moth', create_moth
-  add_bug bugs, 'moth', create_moth
-  add_bug bugs, 'moth', create_moth
+  for i in [0..10]
+    add_bug bugs, 'moth1', create_moth
+
+  for i in [0..10]
+    add_bug bugs, 'moth2', create_moth
 
   bugs
 
@@ -182,12 +183,17 @@ create_fly_trap =
 
 create_moth =
   (info) ->
+    r = random_num 100
+
     if info.front == 'OTHER'
       'EAT'
-    else if info.front == 'EMPTY'
+    else if r > 4 and info.front == 'EMPTY'
       'WALK_FORWARD'
-    else
+    else if r > 2
       'TURN_LEFT'
+    else
+      'TURN_RIGHT'
+
 
 shuffle_array = (array) ->
   i = array.length
