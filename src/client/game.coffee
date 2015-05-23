@@ -65,7 +65,7 @@ add_bug = (bugs, name, move) ->
   bugs.grid[location.x][location.y] =
     move:      move
     name:      name
-    direciton: direction
+    direction: direction
     location:  location
     color:     color
     serial:    (bugs.next_serial += 1)
@@ -92,14 +92,71 @@ next_iteration = (bugs) ->
   for bug in bug_list
     move_bug bugs, bug
 
-  console.log 'end iteration'
+info_at_location = (grid, bug, x, y) ->
+  info = if x < 0 or y < 0 or x == 59 or y == 39
+    'WALL'
+  else if !grid[x][y]?
+    'EMPTY'
+  else if grid[x][y].name == bug.name
+    'SAME'
+  else
+    'OTHER'
+
+  info: info, x: x, y: y
+
+direction_name = (direction) ->
+  switch direction
+    when 0 then 'NORTH'
+    when 1 then 'EAST'
+    when 2 then 'SOUTH'
+    else        'WEST'
 
 move_bug = (bugs, bug) ->
   x = bug.location.x
   y = bug.location.y
+  d = bug.direction
 
-  bug.location.x = x + 1
-  bug.location.y = y + 1
+  surrounding_info = [
+    info_at_location bugs.grid, bug, x, y - 1   # North
+    info_at_location bugs.grid, bug, x + 1, y   # East
+    info_at_location bugs.grid, bug, x, y + 1   # South
+    info_at_location bugs.grid, bug, x - 1, y   # West
+  ]
+
+  while d-- > 0
+    surrounding_info.push(surrounding_info.shift())
+
+  info =
+    front:     surrounding_info[0].info
+    left:      surrounding_info[1].info
+    right:     surrounding_info[2].info
+    back:      surrounding_info[3].info
+    direction: bug.direciton
+
+  front = surrounding_info[0]
+  next  = bug.move info
+
+  switch next
+    when 'EAT'          then eat_bug  bugs, bug, front.info, front.x, front.y
+    when 'WALK_FORWARD' then walk_bug bugs, bug, front.info, front.x, front.y
+    when 'TURN_LEFT'    then turn_bug bug, -1
+    when 'TURN_RIGHT'   then turn_bug bug, +1
+
+eat_bug = (bugs, bug, info, x, y) ->
+  return unless info == 'OTHER'
+  bugs.grid[x][y].name  = bug.name
+  bugs.grid[x][y].move  = bug.move
+  bugs.grid[x][y].color = bug.color
+
+walk_bug = (bugs, bug, info, x, y) ->
+  return unless info == 'EMPTY'
+  bugs.grid[bug.location.x][bug.location.y] = null
+  bugs.grid[x][y] = bug
+  bug.location.x  = x
+  bug.location.y  = y
+
+turn_bug = (bug, offset) ->
+  bug.direction = (((bug.direction + offset) % 4) + 4) % 4
 
 render_game = (canvas, bugs) ->
   canvas.clear()
