@@ -32,21 +32,35 @@ empty_grid = ->
   grid
 
 starting_bugs = ->
-  bugs = grid: empty_grid()
+  bugs =
+    grid:        empty_grid()
+    colors:      {}
+    next_serial: 0
+    next_color:  [
+      'rgb(0,255,0)'
+      'rgb(255,0,0)'
+      'rgb(0,0,255)'
+    ]
 
-  add_bug bugs, 'fly_trap1', 'rgb(0,0,255)', create_fly_trap
-  add_bug bugs, 'fly_trap2', 'rgb(0,0,255)', create_fly_trap
-  add_bug bugs, 'fly_trap3', 'rgb(0,0,255)', create_fly_trap
+  add_bug bugs, 'fly_trap', create_fly_trap
+  add_bug bugs, 'fly_trap', create_fly_trap
+  add_bug bugs, 'fly_trap', create_fly_trap
 
-  add_bug bugs, 'moth1', 'rgb(255,0,0)', create_moth
-  add_bug bugs, 'moth2', 'rgb(255,0,0)', create_moth
-  add_bug bugs, 'moth3', 'rgb(255,0,0)', create_moth
+  add_bug bugs, 'moth', create_moth
+  add_bug bugs, 'moth', create_moth
+  add_bug bugs, 'moth', create_moth
 
   bugs
 
-add_bug = (bugs, name, color, move) ->
+add_bug = (bugs, name, move) ->
   location  = random_location bugs
   direction = random_num 3
+  color     = bugs.colors[name]
+
+  unless color?
+    color = bugs.next_color.pop()
+    throw new Error("This game does not support this many bug types") unless color?
+    bugs.colors[name] = color
 
   bugs.grid[location.x][location.y] =
     move:      move
@@ -54,6 +68,7 @@ add_bug = (bugs, name, color, move) ->
     direciton: direction
     location:  location
     color:     color
+    serial:    (bugs.next_serial += 1)
 
 random_location = (bugs) ->
   x = random_num 59
@@ -80,8 +95,11 @@ next_iteration = (bugs) ->
   console.log 'end iteration'
 
 move_bug = (bugs, bug) ->
-  bug.location.x += 1
-  bug.location.y += 1
+  x = bug.location.x
+  y = bug.location.y
+
+  bug.location.x = x + 1
+  bug.location.y = y + 1
 
 render_game = (canvas, bugs) ->
   canvas.clear()
