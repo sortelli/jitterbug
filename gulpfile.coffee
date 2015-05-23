@@ -10,37 +10,58 @@ nodemon   = require 'gulp-nodemon'
 app_dir    = 'app'
 public_dir = app_dir + '/public'
 
-gulp.task 'web-db', ->
+web_db = ->
   gulp.src 'src/client/db/**'
   .pipe gulp.dest app_dir + '/db'
 
-gulp.task 'web-resources', ->
+web_resources = ->
   gulp.src 'src/client/resources/**'
   .pipe gulp.dest public_dir
 
-gulp.task 'web-coffee', ->
+web_coffee = ->
   gulp.src 'src/client/*.coffee'
     .pipe coffee    bare: true
     .pipe concat    'jitterbug-client.js'
     .pipe gulp.dest public_dir
 
-gulp.task 'web-style', ->
+web_style = ->
   gulp.src 'src/client/*.scss'
     .pipe sass().on 'error', sass.logError
     .pipe concat    'jitterbug-client.css'
     .pipe gulp.dest public_dir + '/css'
 
-gulp.task 'server-coffee', ->
+server_coffee = ->
   gulp.src 'src/server/*.coffee'
     .pipe coffee    bare: true
     .pipe gulp.dest app_dir
 
-gulp.task 'libs', ->
+libs = ->
   gulp.src main_bf()
     .pipe filter '*.js'
     .pipe concat 'libs.min.js'
     .pipe uglify()
     .pipe gulp.dest public_dir
+
+quick_build = ->
+  web_resources()
+  web_db()
+  web_coffee()
+  web_style()
+  server_coffee()
+
+full_build = ->
+  libs()
+  quick_build()
+
+gulp.task 'web-db',        -> web_db()
+gulp.task 'web-resources', -> web_resources()
+gulp.task 'web-coffee',    -> web_coffee()
+gulp.task 'web-style',     -> web_style()
+gulp.task 'server-coffee', -> server_coffee()
+gulp.task 'libs',          -> libs()
+gulp.task 'quick-build',   -> quick_build()
+gulp.task 'full-build',    -> full_build()
+gulp.task 'default',       -> full_build()
 
 gulp.task 'start', ['quick-build'], ->
   nodemon
@@ -49,12 +70,3 @@ gulp.task 'start', ['quick-build'], ->
     tasks: ['quick-build']
     env:
       'NODE_ENV': 'development'
-
-gulp.task 'quick-build', ->
-  gulp.run   'web-resources', 'web-db', 'web-coffee', 'web-style', 'server-coffee'
-
-gulp.task 'full-build', ->
-  gulp.run   'libs', 'quick-build'
-
-gulp.task 'default', ->
-  gulp.run   'full-build'
