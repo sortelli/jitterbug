@@ -12,16 +12,16 @@ jitterbug_game = (canvas_id) ->
   bugs  = starting_bugs()
   render_game canvas, bugs
 
-  #next_turn bugs, canvas, turns
+  next_turn bugs, canvas, turns
 
 next_turn = (bugs, canvas, turns) ->
-  bugs = next_iteration bugs
+  next_iteration bugs
   render_game canvas, bugs
 
-  if turns < 1000
-    setTimeout((-> next_turn bugs, canvas, turns + 1), 10)
+  if turns < 10
+    setTimeout((-> next_turn bugs, canvas, turns + 1), 100)
 
-starting_bugs = ->
+empty_grid = ->
   grid = []
 
   for x in [0..59]
@@ -29,12 +29,18 @@ starting_bugs = ->
     for y in [0..39]
       grid[x][y] = null
 
-  bugs = grid: grid
+  grid
 
+starting_bugs = ->
+  bugs = grid: empty_grid()
 
-  add_bug bugs, 'fly_trap', 'rgb(0,0,255)', create_fly_trap
-  add_bug bugs, 'fly_trap', 'rgb(0,0,255)', create_fly_trap
-  add_bug bugs, 'fly_trap', 'rgb(0,0,255)', create_fly_trap
+  add_bug bugs, 'fly_trap1', 'rgb(0,0,255)', create_fly_trap
+  add_bug bugs, 'fly_trap2', 'rgb(0,0,255)', create_fly_trap
+  add_bug bugs, 'fly_trap3', 'rgb(0,0,255)', create_fly_trap
+
+  add_bug bugs, 'moth1', 'rgb(255,0,0)', create_moth
+  add_bug bugs, 'moth2', 'rgb(255,0,0)', create_moth
+  add_bug bugs, 'moth3', 'rgb(255,0,0)', create_moth
 
   bugs
 
@@ -59,7 +65,23 @@ random_location = (bugs) ->
     x: x, y: y
 
 next_iteration = (bugs) ->
-  bugs
+  bug_list = []
+
+  for column in bugs.grid
+    for bug in column
+      if bug?
+        bug_list.push bug
+
+  shuffle_array bug_list
+
+  for bug in bug_list
+    move_bug bugs, bug
+
+  console.log 'end iteration'
+
+move_bug = (bugs, bug) ->
+  bug.location.x += 1
+  bug.location.y += 1
 
 render_game = (canvas, bugs) ->
   canvas.clear()
@@ -82,3 +104,20 @@ random_num = (max, min = 0) ->
 create_fly_trap =
   (info) ->
     if info.front == 'OTHER' then 'EAT' else 'TURN_LEFT'
+
+create_moth =
+  (info) ->
+    if info.front == 'OTHER'
+      'EAT'
+    else if info.front == 'EMPTY'
+      'WALK_FORWARD'
+    else
+      'TURN_LEFT'
+
+shuffle_array = (array) ->
+  i = array.length
+  return [] if i is 0
+
+  while --i
+      j = Math.floor(Math.random() * (i+1))
+      [array[i], array[j]] = [array[j], array[i]]
