@@ -36,11 +36,7 @@ starting_bugs = ->
     grid:        empty_grid()
     colors:      {}
     next_serial: 0
-    next_color:  [
-      'rgb(0,255,0)'
-      'rgb(255,0,0)'
-      'rgb(0,0,255)'
-    ]
+    next_color:  ['black', 'yellow', 'blue', 'grey', 'pink', 'green', 'red']
 
   for i in [0..10]
     add_bug bugs, 'fly_trap', create_fly_trap
@@ -159,18 +155,36 @@ walk_bug = (bugs, bug, info, x, y) ->
 turn_bug = (bug, offset) ->
   bug.direction = (((bug.direction + offset) % 4) + 4) % 4
 
-render_game = (canvas, bugs) ->
-  canvas.clear()
+add_bug_to_canvas = (canvas, bug) ->
+  x   = bug.location.x * 10
+  y   = bug.location.y * 10
+  pos = switch bug.direction
+    when 0 then left: x,      top: y,      angle:   0
+    when 1 then left: x + 10, top: y,      angle:  90
+    when 2 then left: x + 10, top: y + 10, angle: 180
+    when 3 then left: x,      top: y + 10, angle: 270
 
+  if bug.prev_name == bug.name
+    if bug.canvas_img
+      bug.canvas_img.set pos
+  else
+    canvas.remove(bug.canvas_img) if bug.canvas_img
+    bug.prev_name = bug.name
+    url = '/imgs/bugs/bug_' + bug.color + '.png'
+    fabric.Image.fromURL url, (img) ->
+      bug.canvas_img = img
+      canvas.add img.set
+        width:      10
+        height:     10
+        left:       pos.left
+        top:        pos.top
+        angle:      pos.angle
+        selectable: true
+
+render_game = (canvas, bugs) ->
   for column in bugs.grid
     for bug in column
-      if bug?
-        canvas.add new fabric.Rect
-          left:   bug.location.x * 10
-          top:    bug.location.y * 10
-          height: 10
-          width:  10
-          fill:   bug.color
+      add_bug_to_canvas(canvas, bug) if bug?
 
   canvas.renderAll()
 
