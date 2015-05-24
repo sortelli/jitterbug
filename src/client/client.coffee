@@ -15,6 +15,7 @@ jitterbug.config ['$stateProvider', '$urlRouterProvider',
       .state 'login',
         url:         '/login'
         templateUrl: 'templates/login.html'
+        controller:  'LoginController'
       .state 'game',
         url:         '/game'
         templateUrl: 'templates/game.html'
@@ -34,6 +35,11 @@ jitterbug.controller 'JitterbugMainController', [
         else
           $scope.error       = data
           $scope.login_state = 'error'
+]
+
+jitterbug.controller 'LoginController', [
+  '$scope', '$state', ($scope, $state) ->
+    $state.go 'game' if $scope.login_state == 'logged-in'
 ]
 
 jitterbug.controller 'GameController', [
