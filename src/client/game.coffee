@@ -1,3 +1,43 @@
+make_chart = (svg_id) ->
+  cities = [
+    [
+      {iteration: 1, count: 10, name: 'Test1'},
+      {iteration: 2, count: 20, name: 'Test1'},
+      {iteration: 3, count: 30, name: 'Test1'}
+    ],
+    [
+      {iteration: 1, count: 30, name: 'Test2'},
+      {iteration: 2, count: 20, name: 'Test2'},
+      {iteration: 3, count: 10, name: 'Test2'}
+    ]
+  ]
+
+  xScale     = new Plottable.Scale.Linear()
+  yScale     = new Plottable.Scale.Linear()
+  colorScale = new Plottable.Scale.Color("10")
+
+  xAxis  = new Plottable.Axis.Numeric(xScale, "bottom")
+  yAxis  = new Plottable.Axis.Numeric(yScale, "left")
+  yLabel = new Plottable.Component.Label("Temperature (ºF)", "left")
+  legend = new Plottable.Component.Legend(colorScale)
+
+  plots = cities.map (city) ->
+    return new Plottable.Plot.Line(xScale, yScale)
+                      .addDataset(city)
+                      .project("x", "iteration", xScale)
+                      .project("y", "count", yScale)
+                      .project("stroke", colorScale.scale(city[0].name))
+                      .project("stroke-width", 1)
+
+  gridlines = new Plottable.Component.Gridlines(xScale, yScale)
+  center    = new Plottable.Component.Group(plots).above(gridlines).below(legend)
+  table     = new Plottable.Component.Table([
+    [yLabel, yAxis, center],
+    [null,   null,  xAxis ]
+  ]).renderTo(svg_id)
+  panZoom   = new Plottable.Interaction.PanZoom(xScale, null)
+  center.registerInteraction(panZoom)
+
 jitterbug_game = (canvas_id) ->
   canvas = new fabric.Canvas 'jitterbug_game_canvas',
     backgroundColor:   "#CCCCCC"
@@ -13,6 +53,7 @@ jitterbug_game = (canvas_id) ->
   render_game canvas, bugs
 
   next_turn bugs, canvas, turns
+  make_chart '#jitterbug_progress_chart_svg'
 
 next_turn = (bugs, canvas, turns) ->
   next_iteration bugs
