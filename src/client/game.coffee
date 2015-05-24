@@ -220,7 +220,7 @@ add_bug_to_canvas = (canvas, bug) ->
         left:       pos.left
         top:        pos.top
         angle:      pos.angle
-        selectable: true
+        selectable: false
 
 render_game = (canvas, bugs) ->
   for column in bugs.grid
