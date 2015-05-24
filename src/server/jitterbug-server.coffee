@@ -12,6 +12,12 @@ if app.get('env') == 'development'
 
 db = require('./db.js')(app.get('env'))
 
+nocache = (req, res, next) ->
+  res.header 'Cache-Control', 'private, no-cache, no-store, must-revalidate'
+  res.header 'Expires', '-1'
+  res.header 'Pragma', 'no-cache'
+  next()
+
 passport.serializeUser   (user, done) -> done null, user
 passport.deserializeUser ( obj, done) -> done null, obj
 passport.use new (require('passport-google-openidconnect').Strategy)
@@ -42,7 +48,7 @@ app.get '/auth/google/return',
   (req, res) ->
     res.redirect '/'
 
-app.get '/api/session/user', (req, res) ->
+app.get '/api/session/user', nocache, (req, res) ->
   sess = req.session
 
   if sess.passport and sess.passport.user and sess.passport.user.displayName
