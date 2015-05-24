@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="jitterbug">
+  <head>
+    <title>Jitterbug</title>
+
+    <link rel="stylesheet" href="css/jitterbug-client.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+
+    <script type="text/javascript" src="libs.min.js"></script>
+    <script type="text/javascript" src="jitterbug-client.js"></script>
+  </head>
+  <body ng-controller="JitterbugMainController">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Jitterbug</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" ng-if="login_state == 'logged-in'">
+          <ul class="nav navbar-nav navbar-right">
+          <li><a href="/logout">Logout {{ user.name }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div ui-view></div>
+    </div>
+  </body>
+</html>
