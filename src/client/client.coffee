@@ -47,6 +47,8 @@ jitterbug.controller 'GameController', [
     $state.go 'login' unless $scope.login_state == 'logged-in'
 
     $scope.$on '$viewContentLoaded', ->
-      $('#jitterbug_game').html '<canvas id="jitterbug_game_canvas"/>'
+      $('#jitterbug_game'          ).html '<canvas id="jitterbug_game_canvas"        />'
+      $('#jitterbug_progress_chart').html '<svg    id="jitterbug_progress_chart_svg" />'
+
       jitterbug_game 'jitterbug_game_canvas'
 ]
