@@ -12,11 +12,13 @@ make_chart = (svg_id, bug_stats, max_turns, max_bugs) ->
   legend = new Plottable.Component.Legend(colorScale)
 
   plots = bug_stats.map (stat) ->
+    last_stat = stat[stat.length - 1]
+    name      = last_stat.count + ' ' + last_stat.name
     return new Plottable.Plot.Line(xScale, yScale)
                       .addDataset(stat)
                       .project("x", "iteration", xScale)
                       .project("y", "count", yScale)
-                      .project("stroke", colorScale.scale(stat[0].name))
+                      .project("stroke", colorScale.scale(name))
                       .project("stroke-width", 1)
 
   gridlines = new Plottable.Component.Gridlines(xScale, yScale)
