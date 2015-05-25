@@ -21,27 +21,36 @@ or removed from package.json:
 % npm install
 ```
 
-After the first time you clone, or anytime a bower package is added
-or removed from bower.json:
-
-```bash
-% gulp full-bulid
-```
-
 ### Starting server
 
 To start the development server, run:
 
 ```bash
-% gulp start
+% gulp
 ```
 
 This will watch for changes to the source code and automatically
-restart. If you change an installed bower package, run ```gulp
-full-build```, otherwise simply let ```gulp start``` take care of
-everything for you.
+restart.
 
-# License
+## Building
+
+### Developer Build
+
+To build the app in developer mode (no uglification), run:
+
+```bash
+% gulp build
+```
+
+### Production Build
+
+To build the app in production mode (with uglification), run:
+
+```bash
+% gulp production-build
+```
+
+## License
 
 Copyright (c) 2015
 

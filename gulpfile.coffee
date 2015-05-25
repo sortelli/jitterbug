@@ -1,10 +1,9 @@
 gulp      = require 'gulp'
+gulpif    = require 'gulp-if'
 coffee    = require 'gulp-coffee'
 concat    = require 'gulp-concat'
-filter    = require 'gulp-filter'
 uglify    = require 'gulp-uglify'
 sass      = require 'gulp-sass'
-main_bf   = require 'main-bower-files'
 nodemon   = require 'gulp-nodemon'
 
 app_dir    = 'app'
@@ -30,46 +29,52 @@ web_style = ->
     .pipe concat    'jitterbug-client.css'
     .pipe gulp.dest public_dir + '/css'
 
-  gulp.src 'bower_components/plottable/plottable.css'
+  gulp.src([
+    'src/client/darkly-theme.min.css',
+    'bower_components/plottable/plottable.css'
+  ]).pipe concat 'libs.css'
     .pipe gulp.dest public_dir + '/css'
+
+web_libs = (opts = {}) ->
+  gulp.src([
+    'bower_components/jquery/dist/jquery.js',
+    'bower_components/bootstrap/dist/js/bootstrap.js',
+    'bower_components/angular/angular.js',
+    'bower_components/angular-ui-router/release/angular-ui-router.js',
+    'bower_components/fabric/dist/fabric.js',
+    'bower_components/d3/d3.min.js',
+    'bower_components/svg-typewriter/svgtypewriter.js',
+    'bower_components/plottable/plottable.js'
+  ]).pipe concat 'libs.js'
+    .pipe gulpif(opts.uglify, uglify())
+    .pipe gulp.dest public_dir
 
 server_coffee = ->
   gulp.src 'src/server/*.coffee'
     .pipe coffee    bare: true
     .pipe gulp.dest app_dir
 
-libs = ->
-  gulp.src main_bf()
-    .pipe filter '*.js'
-    .pipe concat 'libs.min.js'
-    .pipe uglify()
-    .pipe gulp.dest public_dir
-
-quick_build = ->
+build = (opts = {}) ->
   web_resources()
   web_db()
   web_coffee()
+  web_libs(opts)
   web_style()
   server_coffee()
 
-full_build = ->
-  libs()
-  quick_build()
+gulp.task 'web-db',           -> web_db()
+gulp.task 'web-resources',    -> web_resources()
+gulp.task 'web-coffee',       -> web_coffee()
+gulp.task 'web-style',        -> web_style()
+gulp.task 'web-libs',         -> web_libs()
+gulp.task 'server-coffee',    -> server_coffee()
+gulp.task 'build',            -> build(ugilfy: false)
+gulp.task 'production-build', -> build(uglify: true)
 
-gulp.task 'web-db',        -> web_db()
-gulp.task 'web-resources', -> web_resources()
-gulp.task 'web-coffee',    -> web_coffee()
-gulp.task 'web-style',     -> web_style()
-gulp.task 'server-coffee', -> server_coffee()
-gulp.task 'libs',          -> libs()
-gulp.task 'quick-build',   -> quick_build()
-gulp.task 'full-build',    -> full_build()
-gulp.task 'default',       -> full_build()
-
-gulp.task 'start', ['quick-build'], ->
+gulp.task 'default', ['build'], ->
   nodemon
     script: app_dir + '/jitterbug-server.js'
     ext: 'coffee scss html'
-    tasks: ['quick-build']
+    tasks: ['build']
     env:
       'NODE_ENV': 'development'
