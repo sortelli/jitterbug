@@ -30,6 +30,9 @@ web_style = ->
     .pipe concat    'jitterbug-client.css'
     .pipe gulp.dest public_dir + '/css'
 
+  gulp.src 'bower_components/plottable/plottable.css'
+    .pipe gulp.dest public_dir + '/css'
+
 server_coffee = ->
   gulp.src 'src/server/*.coffee'
     .pipe coffee    bare: true
