@@ -1,8 +1,8 @@
-make_chart = (svg_id, bug_stats) ->
+make_chart = (svg_id, bug_stats, max_turns, max_bugs) ->
   $(svg_id).empty()
 
-  xScale     = new Plottable.Scale.Linear()
-  yScale     = new Plottable.Scale.Linear()
+  xScale     = new Plottable.Scale.Linear().domain([0, max_turns])
+  yScale     = new Plottable.Scale.Linear().domain([0, max_bugs])
   colorScale = new Plottable.Scale.Color("10")
 
   xAxis  = new Plottable.Axis.Numeric(xScale, "bottom")
@@ -49,7 +49,7 @@ next_turn = (bugs, canvas) ->
 
   if bugs.turns % 10 == 0
     stats = bugs.names.map((name) -> bugs.stats[name])
-    make_chart '#jitterbug_progress_chart_svg', stats
+    make_chart '#jitterbug_progress_chart_svg', stats, 1000, bugs.count
 
   if bugs.turns < 1000
     bugs.turns += 1
@@ -74,6 +74,7 @@ starting_bugs = ->
     names:       []
     next_color:  ['black', 'yellow', 'blue', 'grey', 'pink', 'green', 'red']
     turns:       0
+    count:       0
 
   for i in [0..10]
     add_bug bugs, 'fly_trap', create_fly_trap
@@ -109,6 +110,7 @@ add_bug = (bugs, name, move) ->
     bugs.names.push name
 
   bugs.stats[name][0].count += 1
+  bugs.count += 1
 
 random_location = (bugs) ->
   x = random_num 59
