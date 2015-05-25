@@ -1,16 +1,5 @@
-make_chart = (svg_id) ->
-  cities = [
-    [
-      {iteration: 1, count: 10, name: 'Test1'},
-      {iteration: 2, count: 20, name: 'Test1'},
-      {iteration: 3, count: 30, name: 'Test1'}
-    ],
-    [
-      {iteration: 1, count: 30, name: 'Test2'},
-      {iteration: 2, count: 20, name: 'Test2'},
-      {iteration: 3, count: 10, name: 'Test2'}
-    ]
-  ]
+make_chart = (svg_id, bug_stats) ->
+  $(svg_id).empty()
 
   xScale     = new Plottable.Scale.Linear()
   yScale     = new Plottable.Scale.Linear()
@@ -18,15 +7,15 @@ make_chart = (svg_id) ->
 
   xAxis  = new Plottable.Axis.Numeric(xScale, "bottom")
   yAxis  = new Plottable.Axis.Numeric(yScale, "left")
-  yLabel = new Plottable.Component.Label("Temperature (ºF)", "left")
+  yLabel = new Plottable.Component.Label("Num of Jitterbugs", "left")
   legend = new Plottable.Component.Legend(colorScale)
 
-  plots = cities.map (city) ->
+  plots = bug_stats.map (stat) ->
     return new Plottable.Plot.Line(xScale, yScale)
-                      .addDataset(city)
+                      .addDataset(stat)
                       .project("x", "iteration", xScale)
                       .project("y", "count", yScale)
-                      .project("stroke", colorScale.scale(city[0].name))
+                      .project("stroke", colorScale.scale(stat[0].name))
                       .project("stroke-width", 1)
 
   gridlines = new Plottable.Component.Gridlines(xScale, yScale)
@@ -35,8 +24,6 @@ make_chart = (svg_id) ->
     [yLabel, yAxis, center],
     [null,   null,  xAxis ]
   ]).renderTo(svg_id)
-  panZoom   = new Plottable.Interaction.PanZoom(xScale, null)
-  center.registerInteraction(panZoom)
 
 jitterbug_game = (canvas_id) ->
   canvas = new fabric.Canvas 'jitterbug_game_canvas',
@@ -48,19 +35,22 @@ jitterbug_game = (canvas_id) ->
   canvas.setHeight  400
   canvas.setWidth  600
 
-  turns = 0
   bugs  = starting_bugs()
   render_game canvas, bugs
 
-  next_turn bugs, canvas, turns
-  make_chart '#jitterbug_progress_chart_svg'
+  next_turn bugs, canvas
 
-next_turn = (bugs, canvas, turns) ->
+next_turn = (bugs, canvas) ->
   next_iteration bugs
   render_game canvas, bugs
 
-  if turns < 1000
-    setTimeout((-> next_turn bugs, canvas, turns + 1), 50)
+  if bugs.turns % 10 == 0
+    stats = bugs.names.map((name) -> bugs.stats[name])
+    make_chart '#jitterbug_progress_chart_svg', stats
+
+  if bugs.turns < 1000
+    bugs.turns += 1
+    setTimeout((-> next_turn bugs, canvas), 50)
 
 empty_grid = ->
   grid = []
@@ -77,7 +67,10 @@ starting_bugs = ->
     grid:        empty_grid()
     colors:      {}
     next_serial: 0
+    stats:       {}
+    names:       []
     next_color:  ['black', 'yellow', 'blue', 'grey', 'pink', 'green', 'red']
+    turns:       0
 
   for i in [0..10]
     add_bug bugs, 'fly_trap', create_fly_trap
@@ -108,6 +101,12 @@ add_bug = (bugs, name, move) ->
     color:     color
     serial:    (bugs.next_serial += 1)
 
+  unless bugs.stats[name]?
+    bugs.stats[name] = [{iteration: 0, count: 0, name: name}]
+    bugs.names.push name
+
+  bugs.stats[name][0].count += 1
+
 random_location = (bugs) ->
   x = random_num 59
   y = random_num 39
@@ -129,6 +128,14 @@ next_iteration = (bugs) ->
 
   for bug in bug_list
     move_bug bugs, bug
+
+  bugs.names.map (name) ->
+    count = bug_list.reduce(
+      ((sum, bug) -> if bug.name == name then sum + 1 else sum), 0)
+    bugs.stats[name].push
+      iteration: bugs.turns
+      count:     count
+      name:      name
 
 info_at_location = (grid, bug, x, y) ->
   info = if x < 0 or y < 0 or x == 59 or y == 39
