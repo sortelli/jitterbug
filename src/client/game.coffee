@@ -15,6 +15,7 @@ make_chart = (svg_id, bug_stats, max_turns, max_bugs, colors) ->
     last_stat = stat[stat.length - 1]
     name      = last_stat.count + ' ' + last_stat.name
     return new Plottable.Plot.Line(xScale, yScale)
+                      .animate(false)
                       .addDataset(stat)
                       .project("x", "iteration", xScale)
                       .project("y", "count", yScale)
