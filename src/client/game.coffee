@@ -35,10 +35,15 @@ jitterbug_game = (canvas_id) ->
 
   fabric.Object.prototype.transparentCorners = false
 
-  canvas.setHeight  400
-  canvas.setWidth  600
+  width     = 60 # Number of bugs
+  height    = 40 # Number of bugs
+  bug_size  = 10 # pixels
+  max_turns = 1000
 
-  bugs  = starting_bugs()
+  canvas.setHeight height * bug_size
+  canvas.setWidth  width  * bug_size
+
+  bugs  = starting_bugs(bug_size, width, height, max_turns)
   render_game canvas, bugs
 
   next_turn bugs, canvas
@@ -49,25 +54,22 @@ next_turn = (bugs, canvas) ->
 
   if bugs.turns % 10 == 0
     stats = bugs.names.map((name) -> bugs.stats[name])
-    make_chart '#jitterbug_progress_chart_svg', stats, 1000, bugs.count
+    make_chart '#jitterbug_progress_chart_svg', stats, bugs.max_turns, bugs.count
 
-  if bugs.turns < 1000
+  if bugs.turns < bugs.max_turns
     bugs.turns += 1
     setTimeout((-> next_turn bugs, canvas), 50)
 
-empty_grid = ->
+starting_bugs = (bug_size, width, height, max_turns) ->
   grid = []
 
-  for x in [0..59]
+  for x in [0..(width - 1)]
     grid[x] = []
-    for y in [0..39]
+    for y in [0..(height - 1)]
       grid[x][y] = null
 
-  grid
-
-starting_bugs = ->
   bugs =
-    grid:        empty_grid()
+    grid:        grid
     colors:      {}
     next_serial: 0
     stats:       {}
@@ -75,14 +77,18 @@ starting_bugs = ->
     next_color:  ['black', 'yellow', 'blue', 'grey', 'pink', 'green', 'red']
     turns:       0
     count:       0
+    bug_size:    bug_size
+    width:       width
+    height:      height
+    max_turns:   max_turns
 
-  for i in [0..10]
+  for i in [0...10]
     add_bug bugs, 'fly_trap', create_fly_trap
 
-  for i in [0..10]
+  for i in [0...10]
     add_bug bugs, 'moth1', create_moth
 
-  for i in [0..10]
+  for i in [0...10]
     add_bug bugs, 'moth2', create_moth
 
   bugs
@@ -113,8 +119,8 @@ add_bug = (bugs, name, move) ->
   bugs.count += 1
 
 random_location = (bugs) ->
-  x = random_num 59
-  y = random_num 39
+  x = random_num(bugs.width  - 1)
+  y = random_num(bugs.height - 1)
 
   if (bugs.grid[x][y]?)
     random_location bugs
@@ -208,14 +214,14 @@ walk_bug = (bugs, bug, info, x, y) ->
 turn_bug = (bug, offset) ->
   bug.direction = (((bug.direction + offset) % 4) + 4) % 4
 
-add_bug_to_canvas = (canvas, bug) ->
-  x   = bug.location.x * 10
-  y   = bug.location.y * 10
+add_bug_to_canvas = (canvas, bug, bug_size) ->
+  x   = bug.location.x * bug_size
+  y   = bug.location.y * bug_size
   pos = switch bug.direction
-    when 0 then left: x,      top: y,      angle:   0
-    when 1 then left: x + 10, top: y,      angle:  90
-    when 2 then left: x + 10, top: y + 10, angle: 180
-    when 3 then left: x,      top: y + 10, angle: 270
+    when 0 then left: x,            top: y,            angle:   0
+    when 1 then left: x + bug_size, top: y,            angle:  90
+    when 2 then left: x + bug_size, top: y + bug_size, angle: 180
+    when 3 then left: x,            top: y + bug_size, angle: 270
 
   if bug.prev_name == bug.name
     if bug.canvas_img
@@ -227,8 +233,8 @@ add_bug_to_canvas = (canvas, bug) ->
     fabric.Image.fromURL url, (img) ->
       bug.canvas_img = img
       canvas.add img.set
-        width:      10
-        height:     10
+        width:      bug_size
+        height:     bug_size
         left:       pos.left
         top:        pos.top
         angle:      pos.angle
@@ -237,7 +243,7 @@ add_bug_to_canvas = (canvas, bug) ->
 render_game = (canvas, bugs) ->
   for column in bugs.grid
     for bug in column
-      add_bug_to_canvas(canvas, bug) if bug?
+      add_bug_to_canvas(canvas, bug, bugs.bug_size) if bug?
 
   canvas.renderAll()
 
