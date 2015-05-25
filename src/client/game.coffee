@@ -1,9 +1,9 @@
-make_chart = (svg_id, bug_stats, max_turns, max_bugs) ->
+make_chart = (svg_id, bug_stats, max_turns, max_bugs, colors) ->
   $(svg_id).empty()
 
   xScale     = new Plottable.Scale.Linear().domain([0, max_turns])
   yScale     = new Plottable.Scale.Linear().domain([0, max_bugs])
-  colorScale = new Plottable.Scale.Color("10")
+  colorScale = new Plottable.Scale.Color().range(colors)
 
   xAxis  = new Plottable.Axis.Numeric(xScale, "bottom")
   yAxis  = new Plottable.Axis.Numeric(yScale, "left")
@@ -37,15 +37,24 @@ jitterbug_game = (canvas_id) ->
 
   fabric.Object.prototype.transparentCorners = false
 
-  width     = 60 # Number of bugs
-  height    = 40 # Number of bugs
-  bug_size  = 10 # pixels
-  max_turns = 1000
+  width       = 60 # Number of bugs
+  height      = 40 # Number of bugs
+  bug_size    = 10 # pixels
+  max_turns   = 1000
+  color_scale = [
+    {rgb: '#A61313',  name: 'red'   },
+    {rgb: '#EF38FF',  name: 'pink'  },
+    {rgb: '#4E45FF',  name: 'blue'  },
+    {rgb: '#0D851E',  name: 'green' },
+    {rgb: '#BEC168',  name: 'yellow'},
+    {rgb: '#C1BAB0',  name: 'grey'  },
+    {rgb: '#000000',  name: 'black' }
+  ]
 
   canvas.setHeight height * bug_size
   canvas.setWidth  width  * bug_size
 
-  bugs  = starting_bugs(bug_size, width, height, max_turns)
+  bugs  = starting_bugs(bug_size, width, height, max_turns, color_scale)
   render_game canvas, bugs
 
   next_turn bugs, canvas
@@ -55,14 +64,16 @@ next_turn = (bugs, canvas) ->
   render_game canvas, bugs
 
   if bugs.turns % 10 == 0
-    stats = bugs.names.map((name) -> bugs.stats[name])
-    make_chart '#jitterbug_progress_chart_svg', stats, bugs.max_turns, bugs.count
+    stats  = bugs.names.map((name) -> bugs.stats[name])
+    colors = bugs.color_scale.map((color) -> color.rgb)
+    make_chart '#jitterbug_progress_chart_svg', stats,
+                bugs.max_turns, bugs.count, colors
 
   if bugs.turns < bugs.max_turns
     bugs.turns += 1
     setTimeout((-> next_turn bugs, canvas), 50)
 
-starting_bugs = (bug_size, width, height, max_turns) ->
+starting_bugs = (bug_size, width, height, max_turns, color_scale) ->
   grid = []
 
   for x in [0..(width - 1)]
@@ -76,7 +87,8 @@ starting_bugs = (bug_size, width, height, max_turns) ->
     next_serial: 0
     stats:       {}
     names:       []
-    next_color:  ['black', 'yellow', 'blue', 'grey', 'pink', 'green', 'red']
+    color_scale: color_scale
+    next_color:  color_scale.map((color) -> color.name).reverse()
     turns:       0
     count:       0
     bug_size:    bug_size
