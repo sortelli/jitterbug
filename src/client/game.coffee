@@ -31,12 +31,12 @@ next_turn = (bugs, canvas) ->
   next_iteration bugs
   render_game canvas, bugs
 
-  if bugs.turns % 10 == 0
+  if bugs.turns % 2 == 0
     progress_chart '#jitterbug_progress_chart_svg', bugs
 
   if bugs.turns < bugs.max_turns
     bugs.turns += 1
-    setTimeout((-> next_turn bugs, canvas), 50)
+    setTimeout((-> next_turn bugs, canvas), 30)
 
 starting_bugs = (bug_size, width, height, max_turns, color_scale) ->
   grid = []
