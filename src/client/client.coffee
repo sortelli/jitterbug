@@ -9,7 +9,7 @@ http_get = ($http, $scope, url, success) ->
 
 jitterbug.config ['$stateProvider', '$urlRouterProvider',
   ($stateProvider, $urlRouterProvider) ->
-    $urlRouterProvider.otherwise '/game'
+    $urlRouterProvider.otherwise '/login'
 
     $stateProvider
       .state 'login',
@@ -29,7 +29,6 @@ jitterbug.controller 'JitterbugMainController', [
         $scope.user        = data
         $scope.login_state = 'logged-in'
       .error (data) ->
-        console.log data
         if data == "No active session"
           $scope.login_state = 'logged-out'
         else
@@ -39,7 +38,12 @@ jitterbug.controller 'JitterbugMainController', [
 
 jitterbug.controller 'LoginController', [
   '$scope', '$state', ($scope, $state) ->
-    $state.go 'game' if $scope.login_state == 'logged-in'
+
+    $scope.$on '$viewContentLoaded', ->
+      if $scope.login_state == 'logged-in'
+        $state.go 'game'
+      else
+        $('#jitterbug_login').show()
 ]
 
 jitterbug.controller 'GameController', [
