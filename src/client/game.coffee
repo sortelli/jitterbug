@@ -1,4 +1,4 @@
-jitterbug_game = (canvas_id) ->
+window.jitterbug_game = (canvas_id) ->
   canvas = new fabric.Canvas 'jitterbug_game_canvas',
     backgroundColor:   "#CCCCCC"
     renderOnAddRemove: false

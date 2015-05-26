@@ -19,8 +19,8 @@ web_resources = ->
 
 web_coffee = ->
   gulp.src 'src/client/*.coffee'
-    .pipe coffee    bare: true
-    .pipe concat    'jitterbug-client.js'
+    .pipe coffee bare: false
+    .pipe concat 'jitterbug-client.js'
     .pipe gulp.dest public_dir
 
 web_style = ->
@@ -51,7 +51,7 @@ web_libs = (opts = {}) ->
 
 server_coffee = ->
   gulp.src 'src/server/*.coffee'
-    .pipe coffee    bare: true
+    .pipe coffee    bare: false
     .pipe gulp.dest app_dir
 
 build = (opts = {}) ->

@@ -1,4 +1,4 @@
-progress_chart = (svg_id, bugs) ->
+window.progress_chart = (svg_id, bugs) ->
   bug_stats = bugs.names.map((name) -> bugs.stats[name])
   colors    = bugs.color_scale.map((color) -> color.rgb)
 
