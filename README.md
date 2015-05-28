@@ -3,6 +3,9 @@
 Jitterbug is a game inspired by an old Java homework assignment
 that we had in college.
 
+Play online at
+[http://jitterbug.sortelli.com](http://jitterbug.sortelli.com).
+
 ## Running in developer mode
 
 ### Setup
